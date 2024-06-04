@@ -1,5 +1,7 @@
 # MSC_Alain_Frey
 
+/BeachesIceland-12 contains the custom dataset created during the project.
+
 •	Scanner: accepts a video file and a subtitle file containing DJI telemetry. Inside the script properties such as frames to skip location of the database etc. can be configured.
 
 •	Location Module: calculates the location of an object based on the input coordinates and the location expressed in pixels in the image.
