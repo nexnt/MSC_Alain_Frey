@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detected Objects</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 400px; width: 100%; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Creates a 5-column grid layout */
+            gap: 10px;
+        }
+        .grid-item {
+            text-align: center;
+        }
+        img {
+            width: 100%; /* Responsive images */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detected Objects</h1>
+    <div id="map"></div>
+    <div class="grid-container">
+        {% for id, image, longitude, latitude, altitude in items %}
+        <div class="grid-item">
+            <img src="{{ url_for('image', id=id) }}" alt="Object Image">
+            <p>Longitude: {{ longitude }}<br>
+            Latitude: {{ latitude }}<br>
+            Altitude: {{ altitude }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var bounds = new L.LatLngBounds();
+
+        // Add markers for each item and extend the bounds
+        {% for id, image, longitude, latitude, altitude in items %}
+        var marker = L.marker([{{ latitude }}, {{ longitude }}]).addTo(map)
+            .bindPopup('Longitude: ' + {{ longitude }} + '<br>Latitude: ' + {{ latitude }});
+        bounds.extend(marker.getLatLng());
+        {% endfor %}
+
+        // Automatically zoom the map to fit the markers
+        map.fitBounds(bounds);
+    </script>
+</body>
+</html>
